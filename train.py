@@ -10,7 +10,7 @@ IMG_SIZE = (128, 128)
 BATCH_SIZE = 32
 EPOCHS = 15
 
-data_dir = "data/raw"  #Kaggle dataset
+data_dir = "data/data/raw"  #Kaggle dataset
 X_train, X_test, y_train, y_test = create_train_test_split(data_dir)
 
 # Model architecture
