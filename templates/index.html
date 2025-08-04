@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Fabric Defect Detection</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .defective {
+            background-color: #ffebee;
+            border-left: 5px solid #f44336;
+            display: block;
+        }
+        .good {
+            background-color: #e8f5e9;
+            border-left: 5px solid #4caf50;
+            display: block;
+        }
+        .error {
+            background-color: #fff3e0;
+            border-left: 5px solid #ff9800;
+            display: block;
+        }
+        .confidence {
+            font-weight: bold;
+            margin-top: 10px;
+        }
+        button {
+            background-color: #2196f3;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #0b7dda;
+        }
+    </style>
+</head>
+<body>
+    <h1>Fabric Defect Detection</h1>
+    
+    <div class="upload-area">
+        <form id="uploadForm" enctype="multipart/form-data">
+            <input type="file" name="file" id="fileInput" accept="image/*" required>
+            <br>
+            <button type="submit">Check for Defects</button>
+        </form>
+    </div>
+    
+    <div id="resultContainer" class="result">
+        <h3>Result</h3>
+        <div id="resultText"></div>
+        <div id="confidence" class="confidence"></div>
+    </div>
+
+    <script>
+        document.getElementById('uploadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('fileInput');
+            const resultContainer = document.getElementById('resultContainer');
+            const resultText = document.getElementById('resultText');
+            const confidence = document.getElementById('confidence');
+            
+            // Reset UI
+            resultContainer.className = 'result';
+            resultText.textContent = '';
+            confidence.textContent = '';
+            
+            if (!fileInput.files.length) {
+                showError('Please select an image file');
+                return;
+            }
+            
+            const formData = new FormData();
+            formData.append('file', fileInput.files[0]);
+            
+            try {
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.error) {
+                    showError(data.error);
+                } else {
+                    resultContainer.classList.add(data.status.toLowerCase());
+                    resultText.textContent = `Fabric is ${data.status}`;
+                    confidence.textContent = `Confidence: ${data.confidence}`;
+                }
+            } catch (error) {
+                showError('An error occurred while processing your request');
+                console.error('Error:', error);
+            }
+        });
+        
+        function showError(message) {
+            const resultContainer = document.getElementById('resultContainer');
+            const resultText = document.getElementById('resultText');
+            
+            resultContainer.classList.add('error');
+            resultText.textContent = message;
+        }
+    </script>
+</body>
+</html>
