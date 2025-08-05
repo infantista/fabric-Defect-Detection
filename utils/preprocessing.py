@@ -18,6 +18,7 @@ def load_and_preprocess(data_dir, img_size=(128, 128)):
                 img = img / 255.0 
                 images.append(img)
                 labels.append(label)
+                
             except Exception as e:
                 print(f"Error loading {img_path}: {e}")
     
