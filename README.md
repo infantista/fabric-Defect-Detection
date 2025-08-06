@@ -32,7 +32,7 @@
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/yourusername/fabric-defect-detection.git
+   git clone https://github.com/infantista/fabric-Defect-Detection.git
 
 ### Usage
 ### Training the Model
